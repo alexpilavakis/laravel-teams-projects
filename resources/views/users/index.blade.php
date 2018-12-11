@@ -8,13 +8,30 @@
                     <div class="card-header">Users</div>
 
                     <div class="card-body">
-                        <ul>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             @foreach($users as $user)
-                                <li>
-                                    {{$user->name}} : {{$user->email}}
-                                </li>
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{$user->name}}</td>
+                                    <td>{{$user->email}}</td>
+                                    <td>
+                                        @foreach($user->roles as $role)
+                                            {{$role->name.','}}
+                                        @endforeach
+                                    </td>
+                                </tr>
                             @endforeach
-                        </ul>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

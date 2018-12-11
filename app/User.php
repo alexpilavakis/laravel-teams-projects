@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'team_id'
     ];
 
     /**
@@ -46,6 +46,21 @@ class User extends Authenticatable
             return (bool)$this->team->projects->count();
         }
         return false;
+    }
+
+    public function role()
+    {
+        return $this->hasMany(Role::class);
+    }
+
+    public function assignTo(Team $team)
+    {
+        $this->update(['team_id' => $team->id]);
+    }
+
+    public function removeFrom(Team $team)
+    {
+        $this->update(['team_id' => NULL]);
     }
 
 }

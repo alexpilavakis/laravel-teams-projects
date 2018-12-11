@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('description');
-            $table->boolean('completed');
+            $table->boolean('completed')->default(false);
             $table->unsignedInteger('team_id')->nullable();
             $table->timestamps();
 
