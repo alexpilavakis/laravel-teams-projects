@@ -3,25 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProjectRequest;
-use App\Permissions\HasPermission;
 use App\Project;
-use App\Team;
-use Illuminate\Http\Request;
+use App\Repositories\Project\ProjectRepository;
+use App\Repositories\Team\TeamRepository;
+
 
 class ProjectController extends Controller
 {
 
+    protected $projectRepo;
+    protected $teamRepo;
 
-    public function __construct()
+    public function __construct(ProjectRepository $projectRepo, TeamRepository $teamRepo)
     {
         $this->middleware('auth');
+        $this->projectRepo = $projectRepo;
+        $this->teamRepo = $teamRepo;
     }
 
     public function all()
     {
         $this->authorize('all', Project::class);
 
-        $projects = Project::all();
+        $projects = $this->projectRepo->getAll();
 
         return view('projects.all', compact('projects'));
     }
@@ -30,7 +34,7 @@ class ProjectController extends Controller
     {
         $this->authorize('index', Project::class);
 
-        $projects = auth()->user()->team->projects;
+        $projects = $this->projectRepo->myProjects();
 
         return view('projects.index', compact('projects'));
     }
@@ -49,7 +53,7 @@ class ProjectController extends Controller
     {
         $attributes = $request->all();
 
-        Project::create($attributes);
+        $this->projectRepo->create($attributes);
 
         return back();
     }
@@ -65,7 +69,7 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        $teams = Team::all();
+        $teams = $this->teamRepo->getAll();
 
         return view('projects.edit', compact('teams', 'project'));
     }
@@ -74,11 +78,9 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-
         $attributes = $request->all();
 
-
-        $project->update($attributes);
+        $this->projectRepo->update($project,$attributes);
 
         return redirect('/projects/'.$project->id);
     }
@@ -86,7 +88,12 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        //
+
+        $this->authorize('delete', $project);
+
+        $this->projectRepo->delete($project);
+
+        return redirect('/projects/all');
     }
 
 

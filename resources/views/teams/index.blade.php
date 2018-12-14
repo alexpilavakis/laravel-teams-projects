@@ -13,6 +13,18 @@
                                 <a href="/teams/{{$team->id}}"> {{$team->name}}</a>
                             </li>
                         </ul>
+                        @if (auth()->user()->can('create-team'))
+                            <div class="row">
+                                <div class="col">
+                                    <form method="GET" action="/teams/create">
+                                        <div class="form-group">
+                                            <button class="btn btn-primary mb-3" type="submit">New Team</button>
+                                        </div>
+                                        @include('partials.errors')
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

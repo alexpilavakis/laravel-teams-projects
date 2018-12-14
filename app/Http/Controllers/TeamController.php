@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Team\TeamRepository;
 use App\Team;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+    protected $teamRepo;
 
-
-    public function __construct()
+    public function __construct(TeamRepository $teamRepo)
     {
         $this->middleware('auth');
+        $this->teamRepo = $teamRepo;
     }
-
 
     public function all()
     {
-        $teams = Team::all();
+        $teams = $this->teamRepo->getAll();
 
         return view('teams.all', compact('teams'));
     }
@@ -26,18 +27,23 @@ class TeamController extends Controller
     {
         abort_if($this->userHasNoTeam(),403);
 
-        $team = auth()->user()->team;
+        $team = $this->teamRepo->myTeam();
 
         return view('teams.index', compact('team'));
     }
 
     public function create()
     {
-        //
+        $this->authorize('create', Team::class);
+
+        $team = new Team();
+
+        return view('teams.create', compact('team'));
     }
 
     public function store(Request $request)
     {
+
 
     }
 

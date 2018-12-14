@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Team;
 
 class Project extends Model
 {
@@ -14,11 +13,6 @@ class Project extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
-    }
-
-    public function teamName()
-    {
-        dd((string)$this->team()->get(value(['name'])));
     }
 
     public function tasks()

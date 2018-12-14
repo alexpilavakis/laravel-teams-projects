@@ -41,6 +41,11 @@ class RolePermissionTableSeeder extends Seeder
         $role_coordinator->permissions()->attach(Permission::where('slug','remove-leader')->first());
         $role_coordinator->permissions()->attach(Permission::where('slug','promote-user')->first());
         $role_coordinator->permissions()->attach(Permission::where('slug','demote-user')->first());
+        $role_coordinator->permissions()->attach(Permission::where('slug','create-team')->first());
+        $role_coordinator->permissions()->attach(Permission::where('slug','delete-team')->first());
+        $role_coordinator->permissions()->attach(Permission::where('slug','edit-team')->first());
+        $role_coordinator->permissions()->attach(Permission::where('slug','assign-user-team')->first());
+        $role_coordinator->permissions()->attach(Permission::where('slug','remove-user-team')->first());
 
         $role_admin->permissions()->attach(Permission::where('slug','add-user')->first());
         $role_admin->permissions()->attach(Permission::where('slug','edit-user')->first());

@@ -12,9 +12,26 @@
 
                         <div class="card-subtitle">
                             <p>{{$project->description}}</p>
-                            @if (auth()->user()->can('edit-project'))
-                                <a href="/projects/edit/{{$project->id}}">Edit Project</a>
-                            @endif
+
+                            <div class="row">
+                                @if (auth()->user()->can('edit-project'))
+                                    <div class="col-md-2">
+                                        <a href="/projects/edit/{{$project->id}}">Edit Project</a>
+                                    </div>
+                                @endif
+                                    @if (auth()->user()->can('delete-project'))
+                                        <div class="col-md-3">
+                                            {!! Form::open(array('url' => '/projects/'.$project->id, 'method' => 'delete')) !!}
+                                                <a href="javascript:;" class="text-danger" onclick="parentNode.submit();">Delete Project</a>
+                                            {!! Form::close() !!}
+
+                                        </div>
+                                    @endif
+                            </div>
+
+
+
+
                         </div>
                         <div class="card-body">
                             @if ($project->tasks->count())
