@@ -43,7 +43,11 @@ class TeamController extends Controller
 
     public function store(Request $request)
     {
+        $attributes = $request->all();
 
+        $this->teamRepo->create($attributes);
+
+        return back();
 
     }
 

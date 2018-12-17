@@ -12,18 +12,17 @@
                             <ul>
                                 @foreach($projects as $project)
                                     <li>
-                                        <a href="/projects/{{$project->id}}">{{$project->title}}</a>  Assigned to: {{ $project->team->name ?? 'Not Assigned' }}
+                                        <a href="{{ route('projects.show', ['project' => $project]) }}">{{$project->title}}</a>  Assigned to: {{ $project->team->name ?? 'Not Assigned' }}
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <form method="GET" action="/projects/create">
-                                    <div class="form-group">
-                                        <button class="btn btn-primary mb-3" type="submit">New Project</button>
-                                    </div>
-                                </form>
+                                {!! Form::open (['url' => "/projects/create", 'method'=>'GET']) !!}
+                                {!! Form::submit('New Project') !!}
+                                {!! Form::close() !!}
+
                             </div>
                         </div>
 

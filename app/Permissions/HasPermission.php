@@ -69,4 +69,24 @@ trait HasPermission{
         return $this;
     }
 
+    public function giveRoleTo($slug) {
+        $roles = Role::all();
+        foreach ($roles as $role) {
+            if ($role->slug === $slug) {
+                $this->roles()->attach($role);
+            }
+        }
+        return $this;
+    }
+
+    public function removeRole($slug ) {
+        $roles = Role::all();
+        foreach ($roles as $role) {
+            if ($role->slug === $slug) {
+                $this->roles()->detach($role);
+            }
+        }
+        return $this;
+    }
+
 }

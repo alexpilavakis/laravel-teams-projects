@@ -25,5 +25,5 @@ class DbTeamRepository extends DbRepository implements TeamRepository
     {
         return auth()->user()->team;
     }
-
+    
 }

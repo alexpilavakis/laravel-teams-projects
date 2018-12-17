@@ -24,7 +24,7 @@ class ProjectPolicy
 
     public function view(User $user, Project $project)
     {
-        return ($user->team_id == $project->team_id) or ($user->hasRole('coordinator'));
+        return ($user->team_id == $project->team_id) || ($user->hasRole('coordinator'));
     }
 
     public function create(User $user)

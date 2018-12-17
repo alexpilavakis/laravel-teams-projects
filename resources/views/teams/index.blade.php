@@ -16,12 +16,9 @@
                         @if (auth()->user()->can('create-team'))
                             <div class="row">
                                 <div class="col">
-                                    <form method="GET" action="/teams/create">
-                                        <div class="form-group">
-                                            <button class="btn btn-primary mb-3" type="submit">New Team</button>
-                                        </div>
-                                        @include('partials.errors')
-                                    </form>
+                                    {!! Form::open (['url' => "/teams/create", 'method'=>'GET']) !!}
+                                    {!! Form::submit('New Team') !!}
+                                    {!! Form::close() !!}
                                 </div>
                             </div>
                         @endif

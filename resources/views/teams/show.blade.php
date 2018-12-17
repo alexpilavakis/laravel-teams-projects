@@ -17,7 +17,8 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Role</th>
-                                    @if(auth()->user()->can('remove-user-team'))<th scope="col">Remove</th>@endif
+                                    @if(auth()->user()->can(\App\Enums\Permissions\CoordinatorPermissions::REMOVE_USER_TEAM))<th scope="col">Remove</th>@endif
+                                    @if(auth()->user()->can(\App\Enums\Permissions\CoordinatorPermissions::ASSIGN_LEADER))<th scope="col">Leader</th>@endif
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -32,24 +33,33 @@
                                             @endforeach
                                         </td>
                                         @if(auth()->user()->can('remove-user-team'))
-                                        <td>
-                                            @if(auth()->user()->name != $user->name)
-                                                {!! Form::open(['url' => '/teams/'.$team->id.'/user/'.$user->id, 'method' => 'DELETE']) !!}
-                                                <button class="btn-danger" ONCLICK='this.form.submit()'>Remove</button>
-                                                {!! Form::close() !!}
-                                            @endif
-                                        </td>
+                                            <td>
+                                                @if(auth()->user()->name != $user->name)
+                                                    {!! Form::open(['url' => '/teams/'.$team->id.'/user/'.$user->id, 'method' => 'DELETE']) !!}
+                                                    {!! Form::submit('Remove') !!}
+                                                    {!! Form::close() !!}
+                                                @endif
+                                            </td>
+                                        @endif
+                                        @if(auth()->user()->can(\App\Enums\Permissions\CoordinatorPermissions::ASSIGN_LEADER))
+                                            <td>
+                                                @if(!$user->hasRole(\App\Enums\RoleEnum::TEAM_LEADER))
+                                                    {!! Form::open(['url' => '/teams/'.$team->id.'/user/'.$user->id, 'method' => 'POST']) !!}
+                                                    {!! Form::submit('Assign') !!}
+                                                    {!! Form::close() !!}
+                                                @endif
+                                            </td>
                                         @endif
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                         @endif
-                            @if(auth()->user()->can('assign-user-team'))
+                            @if(auth()->user()->can(\App\Enums\Permissions\CoordinatorPermissions::ASSIGN_USER_TEAM))
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-md-3">
                                         {!! Form::open(['url' => '/teams/'.$team->id.'/user/assign', 'method' => 'post']) !!}
-                                        <button class="btn-primary" ONCLICK='this.form.submit()'>Assign New User</button>
+                                        {!! Form::submit('Assign New User') !!}
                                         {!! Form::close() !!}
                                     </div>
                                 </div>

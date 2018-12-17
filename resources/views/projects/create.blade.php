@@ -21,9 +21,8 @@
                             {!! Form::label('description', 'Description') !!}
                             {!! Form::text('description', '', ['class' => 'form-control']) !!}
                         </div>
-
-                        <button class="btn btn-primary" type="submit">Create Project</button>
-                        @include('partials.errors')
+                        {!! Form::submit('Create Project') !!}
+                            @include('partials.errors')
                         {!! Form::close() !!}
                     </div>
                 </div>

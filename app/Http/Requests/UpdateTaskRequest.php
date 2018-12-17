@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTaskRequest extends FormRequest
@@ -13,7 +14,7 @@ class UpdateTaskRequest extends FormRequest
      */
     public function authorize()
     {
-        if(auth()->user()->hasRole('team-leader'))
+        if(auth()->user()->hasRole(RoleEnum::TEAM_LEADER))
         {
             return true;
         }

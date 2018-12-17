@@ -20,12 +20,9 @@
                         @if (auth()->user()->can('create-project'))
                             <div class="row">
                                 <div class="col">
-                                    <form method="GET" action="/projects/create">
-                                        <div class="form-group">
-                                            <button class="btn btn-primary mb-3" type="submit">New Project</button>
-                                        </div>
-                                        @include('partials.errors')
-                                    </form>
+                                    {!! Form::open (['url' => "/projects/create", 'method'=>'GET']) !!}
+                                    {!! Form::submit('New Project') !!}
+                                    {!! Form::close() !!}
                                 </div>
                             </div>
                         @endif

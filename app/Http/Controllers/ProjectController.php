@@ -44,7 +44,7 @@ class ProjectController extends Controller
 
         $this->authorize('create', Project::class);
 
-        $project = new Project;
+        $project = new Project();
 
         return view('projects.create', compact('project'));
     }
