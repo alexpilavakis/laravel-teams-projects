@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateTaskRequest;
 use App\Project;
+use App\Repositories\Task\DbTaskRepository;
 use App\Task;
 use Illuminate\Http\Request;
 
 class ProjectTaskController extends Controller
 {
+    protected $taskRepo;
+
+    public function __construct(DbTaskRepository $taskRepo)
+    {
+        $this->middleware('auth');
+
+        $this->taskRepo = $taskRepo;
+    }
 
     public function add(Project $project)
     {
         $task = new Task();
+
         return view('tasks.add', compact('task', 'project'));
     }
 
@@ -36,7 +46,7 @@ class ProjectTaskController extends Controller
     {
         $attributes = $request->all();
 
-        $task->update($attributes);
+        $this->taskRepo->update($task, $attributes);
 
         return redirect('/projects/'.$project->id);
     }
@@ -44,7 +54,8 @@ class ProjectTaskController extends Controller
 
     public function destroy(Project $project, Task $task)
     {
-        $task->delete();
+        $this->taskRepo->delete($task);
+
         return redirect('/projects/'.$project->id);
     }
 }

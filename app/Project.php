@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Repositories\Project\DbProjectRepository;
+use App\Repositories\Task\DbTaskRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
@@ -9,6 +11,8 @@ class Project extends Model
     protected $fillable = [
         'title', 'description', 'completed','team_id'
     ];
+
+    protected $projectRepo;
 
     public function team()
     {
@@ -20,19 +24,27 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    public function addTask($task)
+    public function addTask($attributes)
     {
-        $this->tasks()->create($task);
+        $this->projectRepo = new DbProjectRepository($this);
+
+        $this->projectRepo->addTask($attributes);
     }
 
     public function complete()
     {
-        $this->update(['completed' => true]);
+        $this->projectRepo = new DbProjectRepository($this);
+
+        $this->projectRepo->update($this, ['completed' => true]);
+        //$this->update(['completed' => true]);
     }
 
 
     public function incomplete()
     {
-        $this->update(['completed' => false]);
+        $this->projectRepo = new DbProjectRepository($this);
+
+        $this->projectRepo->update($this, ['completed' => false]);
+        //$this->update(['completed' => false]);
     }
 }

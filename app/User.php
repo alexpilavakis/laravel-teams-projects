@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Repositories\User\DbUserRepository;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,12 +46,18 @@ class User extends Authenticatable
 
     public function assignTo(Team $team)
     {
-        $this->update(['team_id' => $team->id]);
+        $userRepo = new DbUserRepository($this);
+
+        $userRepo->update($this,['team_id' => $team->id]);
+        //$this->update(['team_id' => $team->id]);
     }
 
-    public function removeFrom(Team $team)
+    public function removeFromTeam()
     {
-        $this->update(['team_id' => NULL]);
+        $userRepo = new DbUserRepository($this);
+
+        $userRepo->update($this,['team_id' => NULL]);
+        //$this->update(['team_id' => NULL]);
     }
 
 }

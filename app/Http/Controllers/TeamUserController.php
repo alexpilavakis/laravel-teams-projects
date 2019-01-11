@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\RoleEnum;
 use App\Team;
 use App\User;
 use Illuminate\Http\Request;
@@ -19,6 +18,7 @@ class TeamUserController extends Controller
 
     public function assign(Team $team)
     {
+       // dd('xmm');
         $users = User::where('team_id', null)->get();
 
         return view('users.assign', compact('team', 'users'));
@@ -35,22 +35,14 @@ class TeamUserController extends Controller
 
     public function remove(Team $team, User $user)
     {
-        $user->removeFrom($team);
+        $user->removeFromTeam();
 
         return redirect('/teams/'.$team->id);
     }
 
     public function leader(Team $team, User $user)
     {
-        $currentLeader = $team->leader;
-
-        $currentLeader->removeRole(RoleEnum::TEAM_LEADER);
-
-        $user->giveRoleTo(RoleEnum::TEAM_LEADER);
-
-        $attributes = ['team_leader_id' => $user->id];
-
-        $this->teamRepo->update($team, $attributes);
+        $team->setLeader($user);
 
         return redirect('/teams/'.$team->id);
     }

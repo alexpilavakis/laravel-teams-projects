@@ -9,6 +9,7 @@
 namespace App\Repositories\Project;
 use App\Project;
 use App\Repositories\DbRepository;
+use App\Task;
 
 
 class DbProjectRepository extends DbRepository implements ProjectRepository
@@ -24,6 +25,11 @@ class DbProjectRepository extends DbRepository implements ProjectRepository
     public function myProjects()
     {
         return auth()->user()->team->projects;
+    }
+
+    public function addTask($attributes)
+    {
+        $this->model->tasks()->create($attributes);
     }
 
 }
