@@ -15,6 +15,7 @@ class TeamTest extends TestCase
     /** @test */
     public function it_sets_a_new_team_leader()
     {
+        $this->seedData();
         //given a team has a leader
         $team = factory(\App\Team::class)->create(['name'=>'team']);
 
