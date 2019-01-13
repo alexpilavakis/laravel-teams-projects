@@ -60,7 +60,7 @@ Route::prefix('/teams')->group(function () {
     Route::patch('/{team}', 'TeamController@update');
     Route::delete('/{team}', 'TeamController@destroy');
 
-    Route::post('/{team}/user/{user}', 'TeamUserController@leader');
+    Route::post('/{team}/user/{user}', 'TeamUserController@leader')->where('user', '[0-9]+');
     Route::post('/{team}/user/assign', 'TeamUserController@assign');
     Route::post('/{team}/user', 'TeamUserController@store');
     Route::delete('/{team}/user/{user}', 'TeamUserController@remove');
