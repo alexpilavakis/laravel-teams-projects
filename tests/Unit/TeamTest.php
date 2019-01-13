@@ -2,15 +2,11 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Enums\RoleEnum;
+use Tests\TestCase;
 
 class TeamTest extends TestCase
 {
-    use DatabaseTransactions;
 
     /** @test */
     public function it_sets_a_new_team_leader()

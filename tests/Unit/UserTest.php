@@ -4,15 +4,10 @@ namespace Tests\Unit;
 
 use App\Repositories\User\DbUserRepository;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Team;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UserTest extends TestCase
 {
 
-    use DatabaseTransactions;
 
     public function let(DbUserRepository $repository)
     {
