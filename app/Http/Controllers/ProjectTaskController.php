@@ -21,6 +21,8 @@ class ProjectTaskController extends Controller
 
     public function add(Project $project)
     {
+        $this->authorize('create', Task::class);
+
         $task = new Task();
 
         return view('tasks.add', compact('task', 'project'));
@@ -39,11 +41,15 @@ class ProjectTaskController extends Controller
 
     public function edit(Project $project, Task $task)
     {
+        $this->authorize('update', $task);
+
         return view('tasks.edit', compact('task', 'project'));
     }
 
     public function update(UpdateTaskRequest $request, Project $project, Task $task)
     {
+        $this->authorize('update', $task);
+
         $attributes = $request->all();
 
         $this->taskRepo->update($task, $attributes);
@@ -54,6 +60,8 @@ class ProjectTaskController extends Controller
 
     public function destroy(Project $project, Task $task)
     {
+        $this->authorize('delete', $task);
+
         $this->taskRepo->delete($task);
 
         return redirect('/projects/'.$project->id);
