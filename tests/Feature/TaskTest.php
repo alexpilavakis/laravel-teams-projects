@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Enums\Permissions\TeamLeaderPermissions;
 use App\Enums\RoleEnum;
-use App\Permissions\HasPermission;
+use App\Permission;
+use App\Providers\PermissionsServiceProvider;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TaskTest extends TestCase
@@ -26,6 +25,9 @@ class TaskTest extends TestCase
 
         $this->user = factory(\App\User::class)->create();
 
+        //set < user->can() > after database was seeded
+        $test = new PermissionsServiceProvider($this->app);
+        $test->testing();
 
         $this->project = factory(\App\Project::class)->create();
 
@@ -40,9 +42,13 @@ class TaskTest extends TestCase
 
         //Given we have a logged in user who is a team leader
         $this->actingAs($this->user);
-        $this->assertTrue($this->user->hasRole(RoleEnum::TEAM_LEADER));
 
-        $this->get('projects/'. $this->project->id .'/add-task')
+        $this->assertTrue($this->user->can('add-task'));
+
+        $this->get('/projects/'.$this->project->id)
+            ->assertDontSee('this is a new task');
+
+        $this->post('projects/'. $this->project->id .'/add-task')
             ->assertSee('New Task');
 
         //when they hit endpoint /projects/{project}/tasks with the given attributes
@@ -58,8 +64,8 @@ class TaskTest extends TestCase
     {
         //Given we have a logged in user who is a team leader
         $this->actingAs($this->user);
-        $this->assertTrue($this->user->hasRole(RoleEnum::TEAM_LEADER));
 
+        $this->assertTrue($this->user->can('edit-task'));
 
         //and a task in their project
         $this->post('/projects/'.$this->project->id .'/tasks', $this->attributes);
@@ -70,8 +76,8 @@ class TaskTest extends TestCase
         $this->task = $this->project->tasks->first();
 
         //when they hit the endpoint /projects/{project}/tasks/edit/{task} and visit the edit form, they can edit the task description
-        $this->post('/projects/'.$this->project->id .'/tasks/edit/'. $this->task->id)
-            ->assertSee('Description');
+        $this->get('/projects/'.$this->project->id .'/tasks/edit/'. $this->task->id)
+            ->assertSee('Update');
 
         $data = ['description'=>$this->task->description." UPDATED"];
 
@@ -88,7 +94,8 @@ class TaskTest extends TestCase
     {
         //Given we have a logged in user who is a team leader
         $this->actingAs($this->user);
-        $this->assertTrue($this->user->hasRole(RoleEnum::TEAM_LEADER));
+
+        $this->assertTrue($this->user->can('delete-task'));
 
         //and a task in their project
         $this->post('projects/'.$this->project->id .'/tasks', $this->attributes);
@@ -108,29 +115,63 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function guest_or_members_cant_create_a_task()
+    public function guest_or_members_cannot_create_a_task()
     {
-
+        //When a guest is trying to add a task
         $this->post('projects/'.$this->project->id .'/tasks', $this->attributes)->assertRedirect('login');
+
+        $this->user = factory(\App\User::class)->create();
 
         $this->actingAs($this->user);
 
         $this->user->giveRoleTo(RoleEnum::MEMBER);
 
-        $this->post('/projects/'.$this->project->id .'/tasks', $this->attributes)->assertStatus('403');
+        $this->assertFalse($this->user->can('add-task'));
+
+        //When a user with member role is trying to add a task
+        $this->post('projects/'. $this->project->id .'/add-task')->assertStatus(403);
+
+        $this->post('projects/'.$this->project->id .'/tasks', $this->attributes)->assertStatus(403);
     
     }
 
-   /** @test */
-    public function guest_or_members_cant_edit_a_task()
+    /** @test */
+    public function guest_or_members_cannot_edit_a_task()
     {
+        //When a guest is trying to edit a task
         $this->task = factory(\App\Task::class)->create();
 
         $this->patch('projects/'.$this->project->id .'/tasks/edit/'. $this->task->id, $this->attributes)->assertRedirect('login');
 
+        $this->user = factory(\App\User::class)->create();
+
         $this->actingAs($this->user);
+
         $this->user->giveRoleTo(RoleEnum::MEMBER);
 
-        $this->patch('projects/'.$this->project->id .'/tasks/edit/'. $this->task->id, $this->attributes)->assertStatus('403');
+        $this->assertFalse($this->user->can('edit-task'));
+
+        //When a user with member role is trying to edit a task
+        $this->patch('projects/'.$this->project->id .'/tasks/edit/'. $this->task->id, $this->attributes)->assertStatus(403);
+    }
+
+    /** @test */
+    public function guest_or_members_cannot_delete_a_task()
+    {
+        //When a guest is trying to edit a task
+        $this->task = factory(\App\Task::class)->create();
+
+        $this->patch('projects/'.$this->project->id .'/tasks/edit/'. $this->task->id, $this->attributes)->assertRedirect('login');
+
+        $this->user = factory(\App\User::class)->create();
+
+        $this->actingAs($this->user);
+
+        $this->user->giveRoleTo(RoleEnum::MEMBER);
+
+        $this->assertFalse($this->user->can('edit-task'));
+
+        //When a user with member role is trying to delete a task
+        $this->patch('projects/'.$this->project->id .'/tasks/edit/'. $this->task->id, $this->attributes)->assertStatus(403);
     }
 }

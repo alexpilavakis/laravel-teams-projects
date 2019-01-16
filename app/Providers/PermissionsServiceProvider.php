@@ -32,6 +32,15 @@ class PermissionsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
+    }
+
+    public function testing()
+    {
+        Permission::get()->map(function($permission){
+            Gate::define($permission->slug, function($user) use ($permission){
+                return $user->hasPermissionTo($permission);
+            });
+        });
     }
 }
