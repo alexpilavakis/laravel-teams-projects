@@ -19,13 +19,11 @@ class Task extends Model
         $taskRepo = new DbTaskRepository($this);
 
         $taskRepo->update($this, ['completed' => true]);
-        //$this->update(['completed' => true]);
     }
     public function incomplete()
     {
         $taskRepo = new DbTaskRepository($this);
 
         $taskRepo->update($this, ['completed' => false]);
-        //$this->update(['completed' => false]);
     }
 }

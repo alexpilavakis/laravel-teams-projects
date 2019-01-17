@@ -5,7 +5,6 @@ namespace App;
 use App\Repositories\Team\DbTeamRepository;
 use App\Enums\RoleEnum;
 use Illuminate\Database\Eloquent\Model;
-use App\Repositories\Team\TeamRepository;
 
 class Team extends Model
 {

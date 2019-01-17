@@ -4,7 +4,6 @@ namespace App;
 
 use App\Repositories\User\DbUserRepository;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Permissions\HasPermission;
 
@@ -49,7 +48,6 @@ class User extends Authenticatable
         $userRepo = new DbUserRepository($this);
 
         $userRepo->update($this,['team_id' => $team->id]);
-        //$this->update(['team_id' => $team->id]);
     }
 
     public function removeFromTeam()
@@ -57,7 +55,6 @@ class User extends Authenticatable
         $userRepo = new DbUserRepository($this);
 
         $userRepo->update($this,['team_id' => NULL]);
-        //$this->update(['team_id' => NULL]);
     }
 
 }

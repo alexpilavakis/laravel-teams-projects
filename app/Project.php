@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Repositories\Project\DbProjectRepository;
-use App\Repositories\Task\DbTaskRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
@@ -36,7 +35,6 @@ class Project extends Model
         $this->projectRepo = new DbProjectRepository($this);
 
         $this->projectRepo->update($this, ['completed' => true]);
-        //$this->update(['completed' => true]);
     }
 
 
@@ -45,6 +43,5 @@ class Project extends Model
         $this->projectRepo = new DbProjectRepository($this);
 
         $this->projectRepo->update($this, ['completed' => false]);
-        //$this->update(['completed' => false]);
     }
 }

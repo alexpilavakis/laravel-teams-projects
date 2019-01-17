@@ -87,12 +87,12 @@ class UsersTableSeeder extends Seeder
         $user->save();
         $user->roles()->attach($role_member);
         $user->roles()->attach($role_coordinator);
-
+        /*
         $user = new User();
         $user->name = 'admin';
         $user->email = 'admin@example.com';
         $user->password = bcrypt('secret');
         $user->save();
-        $user->roles()->attach($role_admin);
+        $user->roles()->attach($role_admin);*/
     }
 }

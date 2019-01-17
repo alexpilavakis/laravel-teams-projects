@@ -19,14 +19,16 @@
                             </thead>
                             <tbody>
                             @foreach($users as $user)
+                               @php $myroles = "" @endphp
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{$user->name}}</td>
                                     <td>{{$user->email}}</td>
                                     <td>
                                         @foreach($user->roles as $role)
-                                            {{$role->name.','}}
+                                            @php $myroles = $myroles.$role->name.", " @endphp
                                         @endforeach
+                                        {{substr_replace($myroles, "", -2)}}
                                     </td>
                                 </tr>
                             @endforeach

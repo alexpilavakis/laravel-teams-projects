@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleEnum;
 use App\User;
 use App\Project;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -12,7 +13,8 @@ class ProjectPolicy
 
     public function all(User $user)
     {
-        return $user->hasRole('coordinator') or $this->userHasNoProject($user);
+        return $user->hasRole(RoleEnum::COORDINATOR);
+        //or $this->userHasNoProject($user)
 
     }
 
