@@ -21,6 +21,14 @@
                         <li  class="nav-item">
                             @if(auth()->user()->hasTeam()) <a class="nav-link" href="/teams">My Team</a>@endif
                         </li>
+                        @if(auth()->user()->hasRole(\App\Enums\RoleEnum::COORDINATOR))
+                            <li  class="nav-item">
+                                 <a class="nav-link" href="/projects/all">Projects</a>
+                            </li>
+                            <li  class="nav-item">
+                                <a class="nav-link" href="/teams/all">Teams</a>
+                            </li>
+                        @endif
                         @endauth
                 </ul>
             </ul>

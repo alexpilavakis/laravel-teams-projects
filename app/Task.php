@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Repositories\Task\DbTaskRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
@@ -15,10 +16,14 @@ class Task extends Model
     }
     public function complete()
     {
-        $this->update(['completed' => true]);
+        $taskRepo = new DbTaskRepository($this);
+
+        $taskRepo->update($this, ['completed' => true]);
     }
     public function incomplete()
     {
-        $this->update(['completed' => false]);
+        $taskRepo = new DbTaskRepository($this);
+
+        $taskRepo->update($this, ['completed' => false]);
     }
 }

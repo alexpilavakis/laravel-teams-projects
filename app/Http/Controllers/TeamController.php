@@ -2,91 +2,82 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Team\TeamRepository;
 use App\Team;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+    protected $teamRepo;
 
-
-    public function __construct()
+    public function __construct(TeamRepository $teamRepo)
     {
         $this->middleware('auth');
+        $this->teamRepo = $teamRepo;
+    }
+
+    public function all()
+    {
+        $teams = $this->teamRepo->getAll();
+
+        return view('teams.all', compact('teams'));
     }
 
     public function index()
     {
-        abort_if(auth()->user()->team === null,403);
+        abort_if($this->userHasNoTeam(),403);
 
-        $team = auth()->user()->team;
+        $team = $this->teamRepo->myTeam();
 
         return view('teams.index', compact('team'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        $this->authorize('create', Team::class);
+
+        $team = new Team();
+
+        return view('teams.create', compact('team'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+        $attributes = $request->all();
+
+        $this->teamRepo->create($attributes);
+
+        return back();
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Team  $team
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Team $team)
     {
-        abort_unless(auth()->user()->team->id == $team->id,403);
+        $this->authorize('view', $team);
+
         return view('teams.show', compact('team'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Team  $team
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Team $team)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Team  $team
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, Team $team)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Team  $team
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Team $team)
     {
         //
+    }
+
+    protected function userHasNoTeam()
+    {
+        return auth()->user()->team === null;
     }
 }

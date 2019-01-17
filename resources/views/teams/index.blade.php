@@ -13,6 +13,15 @@
                                 <a href="/teams/{{$team->id}}"> {{$team->name}}</a>
                             </li>
                         </ul>
+                        @if (auth()->user()->can('create-team'))
+                            <div class="row">
+                                <div class="col">
+                                    {!! Form::open (['url' => "/teams/create", 'method'=>'GET']) !!}
+                                    {!! Form::submit('New Team') !!}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

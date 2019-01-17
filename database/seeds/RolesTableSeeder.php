@@ -15,7 +15,7 @@ class RolesTableSeeder extends Seeder
     {
         $member= Role::create([
             'slug' => 'member',
-                'name' => 'member'
+                'name' => 'Member'
             ]
         );
         Role::create([
@@ -30,7 +30,7 @@ class RolesTableSeeder extends Seeder
         );
         Role::create([
                 'slug' => 'admin',
-                'name' => 'admin'
+                'name' => 'Admin'
             ]
         );
 

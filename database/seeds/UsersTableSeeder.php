@@ -17,6 +17,7 @@ class UsersTableSeeder extends Seeder
         $role_member = Role::where('slug', 'member')->first();
         $role_team_leader = Role::where('slug', 'team-leader')->first();
         $role_coordinator = Role::where('slug', 'coordinator')->first();
+        $role_admin = Role::where('slug', 'admin')->first();
 
         $user = new User();
         $user->name = 'Victor';
@@ -86,5 +87,12 @@ class UsersTableSeeder extends Seeder
         $user->save();
         $user->roles()->attach($role_member);
         $user->roles()->attach($role_coordinator);
+        /*
+        $user = new User();
+        $user->name = 'admin';
+        $user->email = 'admin@example.com';
+        $user->password = bcrypt('secret');
+        $user->save();
+        $user->roles()->attach($role_admin);*/
     }
 }

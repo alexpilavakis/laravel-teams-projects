@@ -2,90 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProjectRequest;
 use App\Project;
-use Illuminate\Http\Request;
+use App\Repositories\Project\ProjectRepository;
+use App\Repositories\Team\TeamRepository;
+
 
 class ProjectController extends Controller
 {
 
-    public function __construct()
+    protected $projectRepo;
+    protected $teamRepo;
+
+    public function __construct(ProjectRepository $projectRepo, TeamRepository $teamRepo)
     {
         $this->middleware('auth');
+        $this->projectRepo = $projectRepo;
+        $this->teamRepo = $teamRepo;
+    }
+
+    public function all()
+    {
+        $this->authorize('all', Project::class);
+
+        $projects = $this->projectRepo->getAll();
+
+        return view('projects.all', compact('projects'));
     }
 
     public function index()
     {
-        abort_if(auth()->user()->team === null or auth()->user()->team->projects === null,403);
+        $this->authorize('index', Project::class);
 
-        $projects = auth()->user()->team->projects;
+        $projects = $this->projectRepo->myProjects();
 
         return view('projects.index', compact('projects'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+
+        $this->authorize('create', Project::class);
+
+        $project = new Project();
+
+        return view('projects.create', compact('project'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(UpdateProjectRequest $request)
     {
-        //
+        $attributes = $request->all();
+
+        $this->projectRepo->create($attributes);
+
+        return back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
-     */
     public function show(Project $project)
     {
-        abort_unless(auth()->user()->team_id == $project->team_id,403);
+        $this->authorize('view', $project);
+
         return view('projects.show', compact('project'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Project $project)
     {
-        //
+        $this->authorize('update', $project);
+
+        $teams = $this->teamRepo->getAll();
+
+        return view('projects.edit', compact('teams', 'project'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $this->authorize('update', $project);
+
+        $attributes = $request->all();
+
+        $this->projectRepo->update($project,$attributes);
+
+        return redirect('/projects/'.$project->id);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Project $project)
     {
-        //
+
+        $this->authorize('delete', $project);
+
+        $this->projectRepo->delete($project);
+
+        return redirect('/projects/all');
     }
+
+
 }

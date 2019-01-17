@@ -69,6 +69,23 @@ class PermissionsTableSeeder extends Seeder
             ]
         );
 
+        Permission::create([
+                'slug' => 'create-team',
+                'name' => 'Create Team'
+            ]
+        );
+
+        Permission::create([
+                'slug' => 'edit-team',
+                'name' => 'Edit Team'
+            ]
+        );
+        Permission::create([
+                'slug' => 'delete-team',
+                'name' => 'Delete Team'
+            ]
+        );
+
 
         Permission::create([
                 'slug' => 'add-user',

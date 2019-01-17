@@ -8,13 +8,24 @@
                     <div class="card-header">Projects</div>
 
                     <div class="card-body">
-                        <ul>
-                            @foreach($projects as $project)
-                                <li>
-                                    <a href="/projects/{{$project->id}}">{{$project->title}}</a>
-                                </li>
-                            @endforeach
-                        </ul>
+                        <div class="row">
+                            <ul>
+                                @foreach($projects as $project)
+                                    <li>
+                                        <a href="/projects/{{$project->id}}">{{$project->title}}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @if (auth()->user()->can('create-project'))
+                            <div class="row">
+                                <div class="col">
+                                    {!! Form::open (['url' => "/projects/create", 'method'=>'GET']) !!}
+                                    {!! Form::submit('New Project') !!}
+                                    {!! Form::close() !!}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

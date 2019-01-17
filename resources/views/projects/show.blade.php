@@ -12,31 +12,82 @@
 
                         <div class="card-subtitle">
                             <p>{{$project->description}}</p>
-                            @if (auth()->user()->can('edit-project'))
-                                <a href="/projects/edit/{{$project->id}}">Edit Project</a>
-                            @endif
+
+                            <div class="row">
+                                @if (auth()->user()->can('edit-project'))
+                                    <div class="col-md-2">
+                                        <a href="/projects/edit/{{$project->id}}">Edit Project</a>
+                                    </div>
+                                @endif
+                                    @if (auth()->user()->can('delete-project'))
+                                        <div class="col-md-3">
+                                            {!! Form::open(array('url' => '/projects/'.$project->id, 'method' => 'delete')) !!}
+                                                <a href="javascript:;" class="text-danger" onclick="parentNode.submit();">Delete Project</a>
+                                            {!! Form::close() !!}
+
+                                        </div>
+                                    @endif
+                            </div>
+
+
+
+
                         </div>
                         <div class="card-body">
                             @if ($project->tasks->count())
-                                <div>
-                                    @foreach ($project->tasks as $task)
-                                        <form method="post" action="/completed-tasks/{{$task->id}}">
-                                            @if($task->completed)
-                                                @method('DELETE')
-                                            @endif
-                                            @csrf
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="defaultCheck1" {{$task->completed ? 'checked' : ''}} name="completed" onchange="this.form.submit()">
-                                                <label class="form-check-label" for="defaultCheck1">
-                                                    {{$task->description}}
-                                                </label>
+                                @foreach ($project->tasks as $task)
+                                    <div class="row">
+                                        <div class="col col-md">
+                                            <form method="post" action="/completed-tasks/{{$task->id}}">
+                                                @if($task->completed)
+                                                    @method('DELETE')
+                                                @endif
+                                                @csrf
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="defaultCheck1" {{$task->completed ? 'checked' : ''}} name="completed" onchange="this.form.submit()">
+                                                    <label class="form-check-label" for="defaultCheck1">
+                                                        {{$task->description}}
+                                                    </label>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        @if (auth()->user()->can('edit-task'))
+                                            <div class="col-md-1">
+                                                <form method="GET" action="/projects/{{$project->id}}/tasks/edit/{{$task->id}}">
+                                                    <div class="form-group">
+                                                        <button class="btn-sm btn-primary" type="submit">Edit</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </form>
-                                    @endforeach
-                                </div>
+                                        @endif
+                                        @if (auth()->user()->can('delete-task'))
+                                            <div class="col-md-1">
+                                                <form method="POST" action="/projects/{{$project->id}}/tasks/delete/{{$task->id}}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="form-group">
+                                                        <button class="btn-sm btn-danger" type="submit">Delete</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+
                             @endif
+                                @if (auth()->user()->can('add-task'))
+                                    <div class="row">
+                                        <form method="POST" action="/projects/{{$project->id}}/add-task">
+                                            @csrf
+                                            <div class="form-group">
+                                                <button class="btn btn-primary mb-3" type="submit">Add Task</button>
+                                            </div>
+                                            @include('partials.errors')
+                                        </form>
+                                    </div>
+                                @endif
                             <div class="row">
-                                <a class="nav-link" href="/projects">Back</a>
+                                <a class="nav-link" href="{{ url()->previous() }}">Back</a>
                             </div>
                         </div>
                     </div>
